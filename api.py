@@ -2,10 +2,10 @@ from flask import render_template, request, jsonify
 import flask
 import requests
 import json
-import pprint
+from werkzeug.contrib.fixers import ProxyFix
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+#app.config["DEBUG"] = True
 
 url  =  "https://api.dialogflow.com/v1/query"
 headers = {
@@ -47,4 +47,7 @@ def home():
 	return render_template('index.html', variable = {'qnas':qnas})
 	#return jsonify({'qnas': qnas})
 
-app.run()
+app.wsgi_app = ProxyFix(app.wsgi_app)
+
+if __name__ == '__main__':
+	app.run()
